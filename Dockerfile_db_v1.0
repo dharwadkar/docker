@@ -1,0 +1,20 @@
+FROM ubuntu 
+MAINTAINER mukul.dharwadkar@gmail.com
+
+RUN apt-get -y update && apt-get install -y supervisor inetutils-ping net-tools lsof vim telnet openssh-server
+
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get -y update && apt-get install -y mysql-server mysql-client
+#CMD export DEBIAN_FRONTEND=noninteractive && apt-get -y update && apt-get install -y apt-utils debconf-utils && debconf-set-selections <<< "mysql-server mysql-server/root_password password p@ssw0rD" && debconf-set-selections <<< "mysql-server mysql-server/root_password_again password p@ssw0rD"
+
+#RUN /usr/bin/apt-get -y update && /usr/bin/apt-get install -y supervisor mysql-server mysql-client
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+RUN mkdir -p /var/run/mysqld
+RUN /bin/chown -R mysql:mysql /var/run/mysqld
+RUN useradd -ms /bin/bash mukul
+
+EXPOSE 3306
+EXPOSE 22
+
+CMD ["/usr/bin/supervisord"]
