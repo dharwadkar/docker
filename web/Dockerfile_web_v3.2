@@ -1,0 +1,12 @@
+FROM httpd
+LABEL maintainer="mukul.dharwadkar@gmail.com"
+
+RUN apt-get -y update && apt-get install -y vim php7.0 libapache2-mod-php7.0 php7.0-mysql && a2enmod rewrite include && sed -i '/# End of file/ i *    soft    nofile    8192\n*    hard    nofile    8192\n' /etc/security/limits.conf && cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default-original.conf && service apache2 restart
+
+#RUN useradd -ms /bin/bash mukul -p shital
+
+COPY 000-default.conf /etc/apache2/sites-available/
+
+EXPOSE 80
+
+CMD ["apache2ctl", "-D", "FOREGROUND"]

@@ -1,0 +1,10 @@
+FROM arm32v6/httpd:2.4 
+LABEL maintainer="mukul.dharwadkar@gmail.com"
+
+#RUN apt-get -y update && apt-get install -y php
+
+RUN apt-get -y update && apt-get install -y vim php7.0 libapache2-mod-php7.0 php7.0-mysql && a2enmod rewrite include && sed -i '/# End of file/ i *    soft    nofile    8192\n*    hard    nofile    8192\n' /etc/security/limits.conf
+
+EXPOSE 80 22
+
+CMD ["apache2ctl", "-D", "FOREGROUND"]
