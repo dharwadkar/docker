@@ -1,4 +1,4 @@
-FROM alpine
+FROM arm32v6/alpine
 LABEL maintainer="mukul.dharwadkar@gmail.com"
 # This Dockerfile is forked and tailored for my use from the official PHP dockerfile on github.
 
