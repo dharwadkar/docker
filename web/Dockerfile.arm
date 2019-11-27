@@ -1,10 +1,14 @@
-FROM arm32v6/httpd:2.4 
+FROM arm32v6/httpd:2.4-alpine
 LABEL maintainer="mukul.dharwadkar@gmail.com"
+RUN apk update && apk upgrade && apk add vim php7 php7-fpm php7-opcache php7-apache2 php7-mysqli
 
-#RUN apt-get -y update && apt-get install -y php
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
 
-RUN apt-get -y update && apt-get install -y vim php7.0 libapache2-mod-php7.0 php7.0-mysql && a2enmod rewrite include && sed -i '/# End of file/ i *    soft    nofile    8192\n*    hard    nofile    8192\n' /etc/security/limits.conf
+RUN { \
+  echo 'IncludeOptional conf.d/*.conf'; \
+} >> /usr/local/apache2/conf/httpd.conf \
+  && mkdir /usr/local/apache2/conf.d
 
 EXPOSE 80 22
 
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+#CMD ["apache2ctl", "-D", "FOREGROUND"]
