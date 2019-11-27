@@ -3,7 +3,19 @@ LABEL maintainer="mukul.dharwadkar@gmail.com"
 
 #Updates the running build and upgrades it. Installs VIM, PHP modules for Apache and Mysql
 RUN apk update && apk upgrade && apk add vim php7 php7-fpm php7-opcache php7-apache2 php7-mysqli
+RUN set -eux; \
+	addgroup -g 82 -S www-data; \
+	adduser -u 82 -D -S -G www-data www-data
+# 82 is the standard uid/gid for "www-data" in Alpine
+# https://git.alpinelinux.org/aports/tree/main/apache2/apache2.pre-install?h=3.9-stable
+# https://git.alpinelinux.org/aports/tree/main/lighttpd/lighttpd.pre-install?h=3.9-stable
+# https://git.alpinelinux.org/aports/tree/main/nginx/nginx.pre-install?h=3.9-stable
 
+RUN set -eux; \
+	[ ! -d /var/www/html ]; \
+	mkdir -p /var/www/html; \
+	chown www-data:www-data /var/www/html; \
+	chmod 777 /var/www/html
 #Enables rewrite module in apache configuration
 RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
 
